@@ -1,12 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const TodoList = ({ todos = [] }) => {
-  console.log("todo", todos);
+const TodoList = ({ todos = { pending: [], completed: [] } }) => {
+  console.log("todos", todos); // Log to ensure it's correctly structured
 
-  // Extract pending and completed todos
-  const pendingTodos = todos.pending || [];
-  const completedTodos = todos.completed || [];
+  const { pending, completed } = todos; // Destructure pending and completed todos
 
   return (
     <div className="container mt-4">
@@ -14,9 +12,9 @@ const TodoList = ({ todos = [] }) => {
         {/* Pending Todos Column */}
         <div className="col-md-6">
           <h3>Pending Todos</h3>
-          {pendingTodos.length > 0 ? (
+          {pending.length > 0 ? (
             <div className="list-group">
-              {pendingTodos.map((todo) => (
+              {pending.map((todo) => (
                 <div key={todo._id} className="list-group-item">
                   <Link
                     to={`/todo/${todo._id}`}
@@ -35,9 +33,9 @@ const TodoList = ({ todos = [] }) => {
         {/* Completed Todos Column */}
         <div className="col-md-6">
           <h3>Completed Todos</h3>
-          {completedTodos.length > 0 ? (
+          {completed.length > 0 ? (
             <div className="list-group">
-              {completedTodos.map((todo) => (
+              {completed.map((todo) => (
                 <div key={todo._id} className="list-group-item">
                   <Link
                     to={`/todo/${todo._id}`}
@@ -56,5 +54,4 @@ const TodoList = ({ todos = [] }) => {
     </div>
   );
 };
-
 export default TodoList;

@@ -3,11 +3,12 @@ import TodoList from "../components/TodoList";
 import TodoForm from "../components/TodoForm";
 import useFetchTodos from "../hooks/fetchTodo";
 import socket from "../services/socket";
+import api from "../services/api"; // Ensure this imports your API service
 
 const HomePage = () => {
   const [page, setPage] = useState(1);
-  const { todos, loading } = useFetchTodos(page);
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const { todos, loading, fetchTodos } = useFetchTodos(page);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     socket.on("todoReminder", (data) => {
@@ -18,13 +19,25 @@ const HomePage = () => {
   }, []);
 
   const addTodo = async (todo) => {
-    // Add the new TODO to the server here
-    console.log(todo);
-    setShowModal(false); // Close modal after submitting the form
+    try {
+      const response = await api.post("/todos", todo);
+      console.log("API Response:", response.data);
+
+      // Refresh todos list from the server
+      fetchTodos(); // Call fetchTodos manually
+
+      setShowModal(false);
+    } catch (error) {
+      console.error(
+        "Error adding new TODO:",
+        error.response?.data || error.message
+      );
+      alert("Failed to add TODO. Please try again.");
+    }
   };
 
   return (
-    <div className="container">
+    <div className="container mt-4 mb-4">
       <h1>TODO List</h1>
       <button
         className="btn btn-primary mb-3"
